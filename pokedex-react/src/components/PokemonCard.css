@@ -1,8 +1,119 @@
-﻿.pokemon-card { margin-bottom: 25px; transition: transform 0.2s; cursor: pointer; }
-.pokemon-card:hover { transform: translateY(-8px); }
-.card { border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 6px 12px rgba(0,0,0,0.1); position: relative; background: white; }
-.card-img-top { background: radial-gradient(circle at 30% 20%, #f8f9fa, #e2e6ea); padding: 20px; height: 180px; object-fit: contain; cursor: pointer; }
-.card-title { text-transform: capitalize; font-weight: 800; color: #1e2a3e; }
-.favorite-icon { position: absolute; top: 12px; right: 12px; font-size: 1.8rem; cursor: pointer; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
-.favorite-icon.favorited { color: #dc0a2d; }
-@media (max-width: 768px) { .card-img-top { height: 140px; } .favorite-icon { width: 36px; height: 36px; font-size: 1.4rem; } }
+﻿.pokemon-card {
+    margin-bottom: 25px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+}
+
+.card {
+    border-radius: 20px;
+    overflow: hidden;
+    border: none;
+    background: #fff;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    position: relative;
+    height: 100%;
+}
+
+.card-img-top {
+    background: radial-gradient(circle at 30% 20%, #f8f9fa, #e2e6ea);
+    padding: 20px;
+    height: 180px;
+    width: 100%;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.card-title {
+    text-transform: capitalize;
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: #1e2a3e;
+    margin-bottom: 10px;
+}
+
+.card-title mark {
+    background-color: #ffeb3b;
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
+.card-text {
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+}
+
+.card-text i {
+    margin-right: 3px;
+    color: #6c757d;
+}
+
+.stats-mini {
+    background-color: #f8f9fa;
+    padding: 8px;
+    border-radius: 10px;
+    margin: 10px 0;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.stats-mini i {
+    color: #dc0a2d;
+}
+
+.ms-2 {
+    margin-left: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.favorite-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 10;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    backdrop-filter: blur(2px);
+}
+
+.favorite-icon:hover {
+    transform: scale(1.1);
+    background: white;
+}
+
+.favorite-icon.favorited {
+    color: #dc0a2d;
+}
+
+@media (max-width: 768px) {
+    .card-img-top {
+        height: 140px;
+        padding: 15px;
+    }
+    .favorite-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.4rem;
+    }
+    .card-title {
+        font-size: 1.1rem;
+    }
+    .stats-mini {
+        font-size: 0.7rem;
+    }
+}

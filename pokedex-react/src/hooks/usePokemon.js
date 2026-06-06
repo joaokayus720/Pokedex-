@@ -1,4 +1,4 @@
-﻿import { useState, useCallback } from 'react';
+﻿import { useState, useCallback, useRef } from 'react';
 
 export const usePokemon = () => {
   const [pokemons, setPokemons] = useState([]);
@@ -15,28 +15,21 @@ export const usePokemon = () => {
     
     try {
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
       const data = await response.json();
       setTotalCount(data.count);
       
-      const detailsPromises = data.results.map(p => fetch(p.url).then(res => res.json()));
-      const pokemonsData = await Promise.all(detailsPromises);
-      setPokemons(pokemonsData);
+      const details = await Promise.all(data.results.map(p => fetch(p.url).then(r => r.json())));
+      setPokemons(details);
       setCurrentOffset(offset);
       setCurrentType(null);
     } catch (err) {
-      setError('Erro ao carregar Pokémon. Tente novamente.');
-    } finally {
-      setLoading(false);
+      setError('Erro ao carregar Pokémon.');
     }
+    setLoading(false);
   }, [limit]);
 
   const searchPokemon = useCallback(async (name) => {
-    if (!name || name.trim() === '') {
-      setError('Digite o nome de um Pokémon para buscar');
-      return;
-    }
+    console.log('🔍 Buscando:', name);
     
     setLoading(true);
     setError(null);
@@ -44,28 +37,27 @@ export const usePokemon = () => {
     try {
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`);
       
-      if (response.status === 404) {
+      if (!response.ok) {
         setPokemons([]);
         setError(`"${name}" não foi encontrado!`);
-        setTotalCount(0);
         setLoading(false);
         return;
       }
       
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
       const pokemon = await response.json();
+      console.log('✅ Encontrado:', pokemon.name);
+      
+      // Atualizar estado UMA vez
       setPokemons([pokemon]);
       setTotalCount(1);
       setCurrentType(null);
-      setError(null);
       
     } catch (err) {
-      setError('Erro ao buscar Pokémon. Verifique sua internet.');
+      console.error('❌ Erro:', err);
+      setError('Erro ao buscar Pokémon.');
       setPokemons([]);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }, []);
 
   const fetchPokemonsByType = useCallback(async (typeName) => {
@@ -75,45 +67,34 @@ export const usePokemon = () => {
     
     try {
       const response = await fetch(`https://pokeapi.co/api/v2/type/${typeName}`);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
       const data = await response.json();
-      const pokemonUrls = data.pokemon.map(p => p.pokemon.url);
-      const pokemonsData = await Promise.all(pokemonUrls.map(url => fetch(url).then(res => res.json())));
+      const urls = data.pokemon.map(p => p.pokemon.url);
+      const pokemonsData = await Promise.all(urls.map(url => fetch(url).then(r => r.json())));
       setPokemons(pokemonsData);
       setTotalCount(pokemonsData.length);
     } catch (err) {
-      setError(`Erro ao carregar Pokémon do tipo ${typeName}`);
-    } finally {
-      setLoading(false);
+      setError(`Erro ao carregar tipo ${typeName}`);
     }
+    setLoading(false);
   }, []);
 
   const getFavoritePokemons = useCallback(async (favoriteIds) => {
-    setLoading(true);
-    setError(null);
-    setCurrentType(null);
-    
     if (favoriteIds.size === 0) {
       setPokemons([]);
-      setTotalCount(0);
-      setLoading(false);
       return;
     }
     
+    setLoading(true);
     try {
-      const promises = Array.from(favoriteIds).map(id => 
-        fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(res => res.json())
+      const favs = await Promise.all(
+        Array.from(favoriteIds).map(id => fetch(`https://pokeapi.co/api/v2/pokemon/${id}`).then(r => r.json()))
       );
-      const favoritePokemons = await Promise.all(promises);
-      setPokemons(favoritePokemons);
-      setTotalCount(favoritePokemons.length);
+      setPokemons(favs);
+      setTotalCount(favs.length);
     } catch (err) {
       setError('Erro ao carregar favoritos');
-      setPokemons([]);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   }, []);
 
   const clearTypeFilter = useCallback(() => {

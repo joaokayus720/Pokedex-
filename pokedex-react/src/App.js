@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect } from "react";
 import "./App.css";
 import PokemonCard from "./components/PokemonCard";
 import PokemonModal from "./components/PokemonModal";
@@ -35,45 +35,51 @@ function App() {
     fetchPokemons(0);
   }, []);
 
-  // CORRIGIDO: Efeito para mudar modo
   useEffect(() => {
     if (viewMode === "favorites") {
       getFavoritePokemons(favorites);
     } else if (viewMode === "all" && !currentType) {
       fetchPokemons(0);
     }
-  }, [viewMode, favorites, getFavoritePokemons, fetchPokemons, currentType]);
+  }, [viewMode]);
 
-  const handleSearch = useCallback((query) => {
+  // ⚠️ REMOVA ESTE useEffect COMPLETAMENTE ⚠️
+  // useEffect(() => {
+  //   if (viewMode === "search" && searchTerm) {
+  //     searchPokemon(searchTerm);
+  //   }
+  // }, [searchTerm]);
+
+  const handleSearch = (query) => {
     setSearchTerm(query);
     setViewMode("search");
     clearTypeFilter();
-    searchPokemon(query);
-  }, [clearTypeFilter, searchPokemon]);
+    searchPokemon(query); // ÚNICA chamada da busca
+  };
 
-  const handleClearSearch = useCallback(() => {
+  const handleClearSearch = () => {
     setSearchTerm("");
     setViewMode("all");
     clearTypeFilter();
     fetchPokemons(0);
-  }, [clearTypeFilter, fetchPokemons]);
+  };
 
-  const handleShowFavorites = useCallback(() => {
+  const handleShowFavorites = () => {
     setViewMode("favorites");
-    setSearchTerm("");
-  }, []);
+    clearTypeFilter();
+  };
 
-  const handleShowAll = useCallback(() => {
+  const handleShowAll = () => {
     setViewMode("all");
     clearTypeFilter();
     fetchPokemons(0);
-  }, [clearTypeFilter, fetchPokemons]);
+  };
 
-  const handleTypeSelect = useCallback(async (typeName) => {
+  const handleTypeSelect = async (typeName) => {
     await fetchPokemonsByType(typeName);
     setViewMode("all");
     setSearchTerm("");
-  }, [fetchPokemonsByType]);
+  };
 
   const nextPage = () => {
     if (currentType) return;
@@ -149,24 +155,14 @@ function App() {
         </div>
       )}
 
-      {viewMode === "favorites" && !loading && !error && favorites.size === 0 && (
-        <div className="alert alert-info text-center">
-          <i className="fas fa-heart-broken"></i> Você ainda não tem Pokémon favoritos!
-          <br />
-          <small>Clique no coração ❤️ nos cards dos Pokémon para adicionar aos favoritos.</small>
-        </div>
-      )}
-
       {error && !loading && (
         <div className="alert alert-warning text-center">{error}</div>
       )}
 
       {loading && (
         <div className="text-center my-4">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Carregando...</span>
-          </div>
-          <p className="mt-2">Carregando Pokémons...</p>
+          <div className="spinner-border text-primary"></div>
+          <p>Carregando...</p>
         </div>
       )}
 
