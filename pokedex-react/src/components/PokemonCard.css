@@ -1,0 +1,8 @@
+﻿.pokemon-card { margin-bottom: 25px; transition: transform 0.2s; cursor: pointer; }
+.pokemon-card:hover { transform: translateY(-8px); }
+.card { border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 6px 12px rgba(0,0,0,0.1); position: relative; background: white; }
+.card-img-top { background: radial-gradient(circle at 30% 20%, #f8f9fa, #e2e6ea); padding: 20px; height: 180px; object-fit: contain; cursor: pointer; }
+.card-title { text-transform: capitalize; font-weight: 800; color: #1e2a3e; }
+.favorite-icon { position: absolute; top: 12px; right: 12px; font-size: 1.8rem; cursor: pointer; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+.favorite-icon.favorited { color: #dc0a2d; }
+@media (max-width: 768px) { .card-img-top { height: 140px; } .favorite-icon { width: 36px; height: 36px; font-size: 1.4rem; } }
