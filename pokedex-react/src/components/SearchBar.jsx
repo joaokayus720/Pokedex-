@@ -69,7 +69,7 @@ const SearchBar = ({ onSearch, onClear, isLoading }) => {
   };
 
   return (
-    <div className="search-wrapper" ref={suggestionsRef} style={{ position: 'relative' }}>
+    <div className="search-wrapper" ref={suggestionsRef}>
       <div className="input-group">
         <input
           type="text"
@@ -92,25 +92,12 @@ const SearchBar = ({ onSearch, onClear, isLoading }) => {
       </div>
       
       {showSuggestions && (
-        <div className="suggestions-box" style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          background: 'white',
-          border: '1px solid #ddd',
-          borderRadius: '0 0 8px 8px',
-          maxHeight: '250px',
-          overflowY: 'auto',
-          zIndex: 1000,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-        }}>
+        <div className="suggestions-box">
           {suggestions.map((suggestion, index) => (
             <div
               key={index}
               className="suggestion-item"
               onClick={() => handleSuggestionClick(suggestion)}
-              style={{ padding: '10px 15px', cursor: 'pointer', textTransform: 'capitalize' }}
             >
               <i className="fas fa-paw"></i> {suggestion}
             </div>
